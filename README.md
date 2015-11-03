@@ -1,7 +1,5 @@
 # CustomAndroidLint
 
 
-
-License
--------
+## License
 Licensed under the MIT License.
