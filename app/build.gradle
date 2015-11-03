@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "io.github.sangsoonam.application"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        textReport true
+        textOutput 'stdout'
+    }
+}
+
+configurations {
+    customLint
+}
+
+task copyLintJar(type: Copy) {
+    from (configurations.customLint)
+    into "$buildDir/lint"
+}
+
+project.afterEvaluate {
+    it.tasks.compileLint.dependsOn copyLintJar
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.2'
+    customLint project(path:':customlint', configuration: 'archives')
+}
