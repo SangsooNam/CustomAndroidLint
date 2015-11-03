@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/NOTICE.txt'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'LICENSE.txt'
+    }
+}
+
+dependencies {
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.2'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.google.guava:guava:18.0'
+    testCompile 'junit:junit:4.12'
+}

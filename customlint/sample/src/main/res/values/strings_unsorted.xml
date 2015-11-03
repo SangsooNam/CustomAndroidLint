@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="u_a1">a1</string>
+    <string name="u_a2">a2</string>
+    <string-array name="u_b">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="u_a">a</string>
+    <string name="u_c">c</string>
+    <string name="u_d">d</string>
+    <plurals name="u_e">
+        <item quantity="one">11</item>
+        <item quantity="other">2</item>
+    </plurals>
+</resources>

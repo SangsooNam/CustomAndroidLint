@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="s_a">a</string>
+    <string name="s_a1">a1</string>
+    <string name="s_a2">a2</string>
+    <string-array name="s_b">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="s_c">c</string>
+    <string name="s_d">d</string>
+    <plurals name="s_e">
+        <item quantity="one">11</item>
+        <item quantity="other">2</item>
+    </plurals>
+</resources>
