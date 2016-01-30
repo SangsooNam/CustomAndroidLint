@@ -157,20 +157,15 @@ Testing custom rules is a bit different from regular java unit tests. For exampl
 lintFiles("AndroidManifest_missing_label.xml=>AndroidManifest.xml")
 ```
 
+One way to store testing files is put those into a `test/java/res` directory. However, I prefer to create a sample module for testing since it will generate class files for class scope testing.  The minimum dependency between `sample` module and `customlint` is set like this in `customlint/build.gradle`:
 
+```
+project.afterEvaluate {
+    tasks.compileTestJava.dependsOn ':customlint:sample:assemble'
+}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+To make unit testing simplify, I made a helper class [AbstractDetectorTest.java](/customlint/src/test/java/io/github/sangsoonam/lint/AbstractDetectorTest.java) which finds testing files from a `sample` module and rename properly. You can see how it is simplifed in here, [JacksonIgnorePropertiesJavaDetectorTest.java](/customlint/src/test/java/io/github/sangsoonam/lint/detector/jackson/ignoreunknown/JacksonIgnorePropertiesJavaDetectorTest.java)
 
 ## License
 Licensed under the MIT License.
