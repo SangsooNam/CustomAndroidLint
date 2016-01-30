@@ -3,7 +3,7 @@ Lint is a static code analysis tool. Based on rules, it analyzes code and shows 
 
 ![](images/lint-report.png)
 
-This repository contains examples of custom rules and unit tests. If you would make and apply custom rules, checking these code would be helpful.
+This repository contains examples of custom rules and unit tests. If you would make and apply custom rules, checking this code would be helpful.
 
 ## How to Run
 Running custom rules is easy. After cloning this repository, run this commend. Since this repository code has static errors, you can see a error message after executing. There is a nice html result. If you open it, you can see a similar screen which is shown above.
@@ -47,7 +47,8 @@ First, you'll need to create a seperate java module. In Android Studio, select '
 
 ![](images/java-library.png)
 
-Once you finish it, you need to specify a lint-api dependency and a right manifest entry. Change `customlint/build.gradle` like below.
+### Set Dependency and Manifest Entry
+Once you finish it, you need to specify a lint-api dependency and a right manifest entry. Change `customlint/build.gradle` like below:
 
 ```
 apply plugin: 'java'
@@ -63,6 +64,49 @@ jar {
     }
 }
 ```
+
+### Extend IssueRegistry
+There are three main concepts: Issue, Detector and IssueRegistry. Issue is a definition of problem you want to show. Detector identifies one or more types of issues. IssueRegistry is a list of issues. You just specified a class, `CustomIssueRegistry`,  as a manifest entry. To provide custom rules properly, `CustomIssueRegistry` should extend `IssueRegistry`. `IssueRegistry` has only one method, `getIssues`. `CustomIssueRegistry` will be:
+
+```java
+public class CustomIssueRegistry extends IssueRegistry {
+
+	@Override
+	public List<Issue> getIssues() {
+		return Arrays.asList(
+			JacksonIgnorePropertiesJavaDetector.ISSUE // See a next section
+		);
+	}	
+}
+```
+
+### Create Issue
+You can create an issue using a `Issue.create`. It requires many parameters like below:
+```java
+public static Issue ISSUE = Issue.create(
+  "JacksonIgnorePropertiesJava",                                  // ID
+  "Should use @JsonIgnoreProperties(ignoreUnknown = true)",       // Brief Description
+  "By default, @JsonIgnoreProperties(ignoreUnknown = false)..." + // Explanation
+  Category.CORRECTNESS,                                           // Category
+  6,                                                              // Priority
+  Severity.ERROR,                                                 // Severity
+  new Implementation(
+     JacksonIgnorePropertiesJavaDetector.class,                   // Detector
+     Scope.Java_FILE_SCOPE                                        // Scope
+  )
+);
+```
+
+Other parameters are quite obvious, but there are two interesting parameters: `Detector` and `Scope`. `Scope` states a checking range. There are four popular scopes:
+
+* `Scope.JAVA_FILE_SCOPE`: For checking java files. `Detector` should implement `JavaScanner` interface.
+* `Scope.CLASS_FILE_SCOPE`: For checking class files. `Detector` should implement `ClassScanner` interface.
+* `Scope.RESOURCE_FILE`: For checking resource files. `Detector` should implement `XmlScanner` interface.
+* `Scope.MANIFEST_FILE`: For checking manifist files. `Detector` should implement `XmlScanner` interface.
+
+### Create Detector
+
+
 
 
 
