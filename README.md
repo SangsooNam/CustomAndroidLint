@@ -47,7 +47,7 @@ First, you'll need to create a seperate java module. In Android Studio, select '
 
 ![](images/java-library.png)
 
-### Set Dependency and Manifest Entry
+### Set Lint Dependency and Manifest Entry
 Once you finish it, you need to specify a lint-api dependency and a right manifest entry. Change `customlint/build.gradle` like below:
 
 ```
@@ -105,6 +105,60 @@ Other parameters are quite obvious, but there are two interesting parameters: `D
 * `Scope.MANIFEST_FILE`: For checking manifist files. `Detector` should implement `XmlScanner` interface.
 
 ### Create Detector
+`Detector` is responsible to find issues and report. See an example [JacksonIgnorePropertiesJavaDetector.java](/customlint/src/main/java/io/github/sangsoonam/lint/detector/jackson/ignoreunknown/JacksonIgnorePropertiesJavaDetector.java). In the detector, you can mention about the problem location when calling `report`.
+```java
+mContext.report(ISSUE, mContext.getLocation(node.getParent()), "Should use @JsonIgnoreProperties(ignoreUnknown = true)");
+```
+
+> You can see more details on http://tools.android.com/tips/lint/writing-a-lint-check.
+
+
+### Copy Custom Rules
+Until now, there is no relationship between your `app` module and `customlint` module. It means that your custom rules will not be executed when you run `./gradlew lint`. When lint runes, it will look for custom rule jar files in:
+
+* ANDROID_SDK_HOME
+* user.home
+* HOME
+
+Once you copy your `lint.jar` file into one of those directories, it will work. As you see, it needs an access outside of code repository. Thus, it doesn't fit well for collaboration or continuous intergration. Instead of that, I recommend to copy it into build directory. Change your `app/build.gradle` like this:
+
+```
+configurations {
+    customLint
+}
+
+task copyLintJar(type: Copy) {
+    from (configurations.customLint)
+    into "$buildDir/lint"
+}
+
+project.afterEvaluate {
+    it.tasks.compileLint.dependsOn copyLintJar
+}
+
+dependencies {
+    customLint project(path:':customlint', configuration: 'archives')
+}
+```
+
+
+## How to Do Unit Test
+
+First of all, you need to add a dependency in `customlint/build.gradle`
+```
+dependencies {
+    testCompile 'com.android.tools.lint:lint-tests:24.3.1'
+}
+```
+
+Testing custom rules is a bit different from regular java unit tests. For example, every Android application has only one Android manifest file. How do you test variant versions of Android manifest files? For that, there are two methods: `lineFiles` and `lintProject` in `LintDetectorTest`. Basically, it makes an temporary Android project by copying parameter files for testing. While copying, you can rename a file. For instance, `AndroidManifest_missing_label.xml` file will renamed as a name `AndroidManifest.xml`.
+
+```java
+lintFiles("AndroidManifest_missing_label.xml=>AndroidManifest.xml")
+```
+
+
+
 
 
 
