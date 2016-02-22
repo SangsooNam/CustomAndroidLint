@@ -24,5 +24,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.2'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.guava:guava:18.0'
+    compile "io.reactivex:rxjava:1.1.0"
     testCompile 'junit:junit:4.12'
 }
